@@ -160,7 +160,7 @@ if (!$conn) {
             $conn->query("INSERT INTO `teachers_in_sched` (`scheddate`, `schedstarttime`, `schedendtime`, `teacher_ids`)
                     SELECT `scheddate`, `schedstarttime`, `schedendtime`,
                     GROUP_CONCAT(DISTINCT `teacher_id` ORDER BY `teacher_id` SEPARATOR ',') AS `teacher_ids`
-                    FROM `schedule`
+                    FROM `schedule` WHERE `booking_id` IS NULL
                     GROUP BY `scheddate`, `schedstarttime`, `schedendtime`;");
 
             $schedlist = $conn->query("SELECT * FROM `teachers_in_sched`");
