@@ -17,18 +17,17 @@ if (!$conn) {
 if (isset($_POST['sched_id'])) {
     $sched_id = $_POST['sched_id'];
 
-    $result = $_SESSION['sched_list'];
-
     $result = $conn->query("SELECT `teacher_ids`
             FROM `teachers_in_sched`
             WHERE `id` = $sched_id");
-    $availableteachers = $result->fetch_assoc();
-    echo "available teacher ids are: $availableteachers";
+    $row = $result->fetch_assoc();
+    $availableteachers = $row['teacher_ids'];     //sample value: 1,8,9
 
     // Fetch teachers assigned to the selected schedule
     $result = $conn->query("SELECT `id`, `fname`, `lname`
-            FROM teacher
-            WHERE `id` IN $availableteachers;");
+            FROM `teacher`
+            WHERE `id` IN ($availableteachers)
+            ORDER BY `lname` ASC;");
 
     echo '<option value="">Select Teacher</option>';
     while ($row = $result->fetch_assoc()) {
