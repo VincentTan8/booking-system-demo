@@ -173,7 +173,7 @@ if ($conn->query($query) === TRUE) {
 //Grouped Teachers Per Sched Table
 $tablename = 'teachers_in_sched';
 $query = "CREATE TABLE `$tablename` (
-		`id` INT AUTO_INCREMENT PRIMARY KEY,  -- Unique ID for each row
+		`id` INT AUTO_INCREMENT PRIMARY KEY,  
 		`scheddate` DATE,
 		`schedstarttime` TIME,
 		`schedendtime` TIME,
