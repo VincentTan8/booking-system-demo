@@ -38,6 +38,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Execute query and check for success
     if (mysqli_query($conn, $sql)) {
+        $last_id = mysqli_insert_id($conn);
+        $conn->query("UPDATE `schedule` SET `booking_id` = $last_id WHERE `id` = $schedule_id");
         echo "Booking added successfully!<br>";
         echo "<a href='index.php'><button>Home</button></a>";
     } else {
