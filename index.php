@@ -154,6 +154,7 @@ if (!$conn) {
         <select id="scheduleSelect" name="schedule" required>
             <option value="">Select Schedule</option>
             <?php
+            //to avoid duplicate entries
             $conn->query("TRUNCATE TABLE `teachers_in_sched`");
 
             $conn->query("INSERT INTO `teachers_in_sched` (`scheddate`, `schedstarttime`, `schedendtime`, `teacher_ids`)
@@ -163,7 +164,6 @@ if (!$conn) {
                     GROUP BY `scheddate`, `schedstarttime`, `schedendtime`;");
 
             $schedlist = $conn->query("SELECT * FROM `teachers_in_sched`");
-            $_SESSION['sched_list'] = $schedlist;
 
             for ($i = 0; $i < $schedlist->num_rows; $i++) {
                 $row = $schedlist->fetch_assoc();
