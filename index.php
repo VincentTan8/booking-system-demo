@@ -204,6 +204,45 @@ if (!$conn) {
 
         <input type="submit" value="Add Booking">
     </form>
+
+    <h2>Delete Booking</h2>
+    <form action="delete-booking.php" method="post">
+        <label>Bookings:</label>
+        <select name="booking" required>
+            <option value="">Select Booking</option>
+            <?php
+            $bookinglist = $conn->query("SELECT 
+                    b.id AS `booking_id`,
+                    s.scheddate,
+                    s.schedstarttime,
+                    s.schedendtime,
+                    CONCAT(st.lname, ', ', st.fname) AS `student_name`,
+                    CONCAT(t.lname, ', ', t.fname) AS `teacher_name`,
+                    l.details AS `language_name`
+                    FROM `booking` b
+                    LEFT JOIN `schedule` s ON b.schedule_id = s.id
+                    LEFT JOIN `student` st ON b.student_id = st.id
+                    LEFT JOIN `teacher` t ON s.teacher_id = t.id
+                    LEFT JOIN `language` l ON s.language_id = l.id;");
+
+            for ($i = 0; $i < $bookinglist->num_rows; $i++) {
+                $row = $bookinglist->fetch_assoc();
+                $scheddate = $row["scheddate"];
+                $schedstarttime = $row["schedstarttime"];
+                $schedendtime = $row["schedendtime"];
+                $student_name = $row["student_name"];
+                $teacher_name = $row["teacher_name"];
+                $language_name = $row["language_name"];
+                $id = $row["booking_id"];
+                echo "<option value='$id'>$scheddate $schedstarttime-$schedendtime | $student_name | $teacher_name | $language_name</option><br/>";
+            }
+            ;
+            ?>
+        </select>
+        <br><br>
+
+        <input type="submit" value="Delete Booking">
+    </form>
     <br><br><br><br>
 
     <script>
