@@ -165,11 +165,11 @@ if (!$conn) {
             //to avoid duplicate entries
             $conn->query("TRUNCATE TABLE `teachers_in_sched`");
 
-            $conn->query("INSERT INTO `teachers_in_sched` (`scheddate`, `schedstarttime`, `schedendtime`, `teacher_ids`)
-                    SELECT `scheddate`, `schedstarttime`, `schedendtime`,
+            $conn->query("INSERT INTO `teachers_in_sched` (`scheddate`, `schedstarttime`, `schedendtime`, `platform`, `teacher_ids`)
+                    SELECT `scheddate`, `schedstarttime`, `schedendtime`, `platform`,
                     GROUP_CONCAT(DISTINCT `teacher_id` ORDER BY `teacher_id` SEPARATOR ',') AS `teacher_ids`
                     FROM `schedule` WHERE `booking_id` IS NULL
-                    GROUP BY `scheddate`, `schedstarttime`, `schedendtime`;");
+                    GROUP BY `scheddate`, `schedstarttime`, `schedendtime`, `platform`;");
 
             $schedlist = $conn->query("SELECT * FROM `teachers_in_sched`");
 
@@ -178,8 +178,9 @@ if (!$conn) {
                 $starttime = $row["schedstarttime"];
                 $endtime = $row["schedendtime"];
                 $date = $row["scheddate"];
+                $platform = $row["platform"] ? "Online" : "Offline";
                 $id = $row["id"];
-                echo "<option value='$id'>$date $starttime - $endtime</option><br/>";
+                echo "<option value='$id'>$date $starttime - $endtime | $platform</option><br/>";
             }
             ;
             ?>
@@ -224,6 +225,7 @@ if (!$conn) {
                     s.scheddate,
                     s.schedstarttime,
                     s.schedendtime,
+                    s.platform,
                     CONCAT(st.lname, ', ', st.fname) AS `student_name`,
                     CONCAT(t.lname, ', ', t.fname) AS `teacher_name`,
                     l.details AS `language_name`
@@ -238,11 +240,12 @@ if (!$conn) {
                 $scheddate = $row["scheddate"];
                 $schedstarttime = $row["schedstarttime"];
                 $schedendtime = $row["schedendtime"];
+                $platform = $row["platform"] ? "Online" : "Offline";
                 $student_name = $row["student_name"];
                 $teacher_name = $row["teacher_name"];
                 $language_name = $row["language_name"];
                 $id = $row["booking_id"];
-                echo "<option value='$id'>$scheddate $schedstarttime-$schedendtime | $student_name | $teacher_name | $language_name</option><br/>";
+                echo "<option value='$id'>$scheddate $schedstarttime-$schedendtime | $student_name | $teacher_name | $platform</option><br/>";
             }
             ;
             ?>
