@@ -178,6 +178,7 @@ $query = "CREATE TABLE `$tablename` (
 		`scheddate` DATE,
 		`schedstarttime` TIME,
 		`schedendtime` TIME,
+		`platform` BOOLEAN NOT NULL,
 		`teacher_ids` TEXT NOT NULL
 	);"
 ;
