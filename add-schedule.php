@@ -24,14 +24,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $schedstarttime = $row["starttime"];
     $schedendtime = $row["endtime"];
 
+    $platform = $_POST["platform"];
+
     $teacher_id = mysqli_real_escape_string($conn, $_POST['teacher']);
     $teacher = $conn->query("SELECT `language_id` FROM `teacher` WHERE `id` = $teacher_id");
     $row = $teacher->fetch_assoc();
     $language_id = $row["language_id"];
 
     // SQL query to insert data
-    $sql = "INSERT INTO `schedule` (`scheddate`, `schedstarttime`, `schedendtime`, `teacher_id`, `language_id`) 
-            VALUES ('$scheddate', '$schedstarttime', '$schedendtime', '$teacher_id', '$language_id');";
+    $sql = "INSERT INTO `schedule` (`scheddate`, `schedstarttime`, `schedendtime`, `teacher_id`, `platform`, `language_id`) 
+            VALUES ('$scheddate', '$schedstarttime', '$schedendtime', '$teacher_id', '$platform', '$language_id');";
 
     // Execute query and check for success
     if (mysqli_query($conn, $sql)) {
