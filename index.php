@@ -127,6 +127,14 @@ if (!$conn) {
         </select>
         <br><br>
 
+        <label>Platform:</label>
+        <select name="platform" required>
+            <option value="">Select Platform</option>
+            <option value="0">Offline</option>
+            <option value="1">Online</option>
+        </select>
+        <br><br>
+
         <label>Teacher:</label>
         <select name="teacher" required>
             <option value="">Select Teacher</option>
