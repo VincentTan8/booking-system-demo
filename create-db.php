@@ -13,12 +13,12 @@ set_time_limit(0);
 
 $presentdate = date('Y-m-d');
 
-include 'dbname.php';
+include 'conf.php';
 if (!$conn) {
 	$conn = mysqli_connect($host, $uname, $pass);
 	$sql = "CREATE DATABASE IF NOT EXISTS `$database`";
 	if ($conn->query($sql) === TRUE) {
-		include 'dbname.php';
+		include 'conf.php';
 	}
 }
 
@@ -95,15 +95,16 @@ $query = "CREATE TABLE `$tablename` (
 		`birthday` DATE,
 		`gender` VARCHAR(20) NOT NULL,
 		`language_id` INT DEFAULT NULL,
+		`password` VARCHAR(100) NOT NULL,
 		FOREIGN KEY (`language_id`) REFERENCES `language`(`id`) ON DELETE SET NULL
 	);"
 ;
 if ($conn->query($query) === TRUE) {
 	echo "Table $tablename created successfully.<br>";
 	$query = "INSERT INTO `$tablename` 
-			(`fname`, `lname`, `email`, `city`, `phone`, `birthday`, `gender`, `language_id`) 
+			(`fname`, `lname`, `email`, `city`, `phone`, `birthday`, `gender`, `language_id`, `password`) 
 			VALUES
-			('Kat', 'Gecolea', 'kat@wetalk.com', 'Cavite', '+639876543210', '1990-05-01', 'Female', 2)
+			('Kat', 'Gecolea', 'kat@wetalk.com', 'Cavite', '+639876543210', '1990-05-01', 'Female', 2, 'test')
 		;"
 	;
 	$conn->query($query);
@@ -122,7 +123,8 @@ $query = "CREATE TABLE `$tablename` (
 		`city` VARCHAR(100) NOT NULL,
 		`phone` VARCHAR(50) NOT NULL,
 		`birthday` DATE,
-		`gender` VARCHAR(20) NOT NULL
+		`gender` VARCHAR(20) NOT NULL,
+		`password` VARCHAR(100) NOT NULL
 	);"
 ;
 if ($conn->query($query) === TRUE) {
@@ -188,6 +190,33 @@ if ($conn->query($query) === TRUE) {
 	echo "Error creating table `$tablename`: $conn->error <br>";
 }
 
+//CS table
+$tablename = 'cs';
+$query = "CREATE TABLE `$tablename` (
+      	`id` INT AUTO_INCREMENT PRIMARY KEY,
+      	`fname` VARCHAR(100) NOT NULL,
+		`mname` VARCHAR(100),
+      	`lname` VARCHAR(100) NOT NULL,
+	  	`email` VARCHAR(100) NOT NULL UNIQUE,
+		`city` VARCHAR(100) NOT NULL,
+		`phone` VARCHAR(50) NOT NULL,
+		`birthday` DATE,
+		`gender` VARCHAR(20) NOT NULL,
+		`password` VARCHAR(100) NOT NULL
+	);"
+;
+if ($conn->query($query) === TRUE) {
+	echo "Table $tablename created successfully.<br>";
+	$query = "INSERT INTO `$tablename` 
+			(`fname`, `lname`, `email`, `city`, `phone`, `birthday`, `gender`, `password`) 
+			VALUES
+			('Judy', 'Aplacador', 'judy@wetalk.com', 'Taguig', '+639182736450', '1997-04-30', 'Female', 'test')
+		;"
+	;
+	$conn->query($query);
+} else {
+	echo "Error creating table `$tablename`: $conn->error <br>";
+}
 // Close connection
 mysqli_close($conn);
 ?>
