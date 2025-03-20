@@ -31,16 +31,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $row = $teacher->fetch_assoc();
     $language_id = $row["language_id"];
 
-    // SQL query to insert data
-    $sql = "INSERT INTO `schedule` (`scheddate`, `schedstarttime`, `schedendtime`, `teacher_id`, `platform`, `language_id`) 
-            VALUES ('$scheddate', '$schedstarttime', '$schedendtime', '$teacher_id', '$platform', '$language_id');";
-
-    // Execute query and check for success
-    if (mysqli_query($conn, $sql)) {
-        echo "Schedule added successfully!<br>";
+    //check if schedule already exists in DB
+    $tablename = $prefix . "_resources.`schedule`";
+    $existingsched = $conn->query("SELECT * FROM $tablename WHERE `scheddate` = '$scheddate' AND `schedstarttime` = '$schedstarttime' AND `teacher_id` = $teacher_id");
+    if ($existingsched->fetch_assoc()) {
+        echo "Schedule already exists!<br>";
         echo "<a href='index.php'><button>Home</button></a>";
     } else {
-        echo "Error: " . mysqli_error($conn);
+        // SQL query to insert data
+        $sql = "INSERT INTO `schedule` (`scheddate`, `schedstarttime`, `schedendtime`, `teacher_id`, `platform`, `language_id`) 
+            VALUES ('$scheddate', '$schedstarttime', '$schedendtime', '$teacher_id', '$platform', '$language_id');";
+
+        // Execute query and check for success
+        if (mysqli_query($conn, $sql)) {
+            echo "Schedule added successfully!<br>";
+            echo "<a href='index.php'><button>Home</button></a>";
+        } else {
+            echo "Error: " . mysqli_error($conn);
+        }
     }
 }
 
