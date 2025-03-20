@@ -5,7 +5,7 @@ if (!isset($_SESSION)) {
 }
 
 // Database connection
-include 'dbname.php';
+include 'conf.php';
 
 // Check connection
 if (!$conn) {
