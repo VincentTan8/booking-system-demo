@@ -158,32 +158,18 @@ if (!$conn) {
 
     <h2>Add Booking (CS)</h2> <!-- Student will not have a student field -->
     <form action="add-booking.php" method="post">
+        <label>Platform:</label>
+        <div id="platformSelect" class="toggle-group">
+            <input type="radio" class="toggle-radio" id="offline" name="platform" value="0">
+            <label class="toggle-label" for="offline">Offline</label>
+            <input type="radio" class="toggle-radio" id="online" name="platform" value="1">
+            <label class="toggle-label" for="online">Online</label>
+        </div>
+        <br>
+
         <label>Schedules Available:</label>
         <select id="scheduleSelect" name="schedule" required>
             <option value="">Select Schedule</option>
-            <?php
-            //to avoid duplicate entries
-            $conn->query("TRUNCATE TABLE `teachers_in_sched`");
-
-            $conn->query("INSERT INTO `teachers_in_sched` (`scheddate`, `schedstarttime`, `schedendtime`, `platform`, `teacher_ids`)
-                    SELECT `scheddate`, `schedstarttime`, `schedendtime`, `platform`,
-                    GROUP_CONCAT(DISTINCT `teacher_id` ORDER BY `teacher_id` SEPARATOR ',') AS `teacher_ids`
-                    FROM `schedule` WHERE `booking_id` IS NULL
-                    GROUP BY `scheddate`, `schedstarttime`, `schedendtime`, `platform`;");
-
-            $schedlist = $conn->query("SELECT * FROM `teachers_in_sched`");
-
-            for ($i = 0; $i < $schedlist->num_rows; $i++) {
-                $row = $schedlist->fetch_assoc();
-                $starttime = $row["schedstarttime"];
-                $endtime = $row["schedendtime"];
-                $date = $row["scheddate"];
-                $platform = $row["platform"] ? "Online" : "Offline";
-                $id = $row["id"];
-                echo "<option value='$id'>$date $starttime - $endtime | $platform</option><br/>";
-            }
-            ;
-            ?>
         </select>
         <br><br>
 
@@ -258,8 +244,29 @@ if (!$conn) {
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            const platforms = document.querySelectorAll('input[name="platform"]');
             const scheduleSelect = document.getElementById("scheduleSelect");
             const teacherSelect = document.getElementById("teacherSelect");
+
+            // Add event listeners to radio buttons
+            platforms.forEach(platform => {
+                platform.addEventListener("change", function () {
+                    //reset teacher selection
+                    teacherSelect.innerHTML = '<option value="">Select Teacher</option>';
+
+                    // Use fetch() to get schedules based on the platform
+                    fetch("fetch-schedule.php", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: "platform=" + encodeURIComponent(this.value)
+                    })
+                        .then(response => response.text())
+                        .then(data => {
+                            scheduleSelect.innerHTML = data; // Update dropdown
+                        })
+                        .catch(error => console.error("Error fetching schedules:", error));
+                });
+            });
 
             scheduleSelect.addEventListener("change", function () {
                 let sched_id = scheduleSelect.value;
